@@ -15,13 +15,20 @@ POLYNOMIAL = {
 def calc_crc(generator: Array, trama: Array) -> Array:
     i=0;
     crc=[]
-    while len(generator) <= len(trama):
+    while len(generator) < len(trama):
         for j in range(len(generator)):
             crc.append(trama[j]^generator[j])
+        index = crc.index(1)
+        crc=crc[index:]
+        print(trama)
+        print('crc')
+        print(crc)
+        trama = trama[len(generator):]
+        trama = crc+trama[0:(index)]
+        print(trama)
         break 
-    print(trama[:len(generator)])
-    print(generator)   
-    print(crc)
+    print('-------------------------------------')
+    print('Cálculo CRC')   
 
     #print(generator)
     #print(trama[:len(generator)])
