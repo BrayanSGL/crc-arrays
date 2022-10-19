@@ -10,19 +10,24 @@ POLYNOMIAL = {
     'binary': [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1]
 }
 
-#insertar un 0 cada 8 posiciones de izquuierda a derecha
+# insertar un 0 cada 8 posiciones de izquuierda a derecha
+
+
 def convert_a_binario(string):
     binario = ''
     for i in string:
         binario += f'{ord(i):08b}'
     return binario
 
-#Convertir string a vector
+# Convertir string a vector
+
+
 def convert_a_vector(string):
     vector = []
     for i in string:
         vector.append(int(i))
     return vector
+
 
 def convertir_a_string(arreglo):
     string = ''
@@ -94,11 +99,16 @@ def main():
         print('Residuo de la división: ', convertir_a_string(residuo))
         print('Secuencia binaria de datos para la detección de errores: ',
               convertir_a_string(binary_string+residuo))
-        os.system('pause')
-
-
 
         # Comprobacion de CRC
+        residuo_verific = calcular_residuo(
+            POLYNOMIAL.get('binary'), binary_string+residuo)
+        verificacion = True if residuo_verific == [
+            0] * len(POLYNOMIAL.get('binary')) else False
+        print('Trama procesada correctammente :', verificacion,
+              '\nResiduo de la verificación: ', convertir_a_string(residuo_verific))
+
+        os.system('pause')
 
 
 if __name__ == '__main__':
