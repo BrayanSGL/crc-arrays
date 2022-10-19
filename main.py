@@ -10,8 +10,19 @@ POLYNOMIAL = {
     'binary': [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1]
 }
 
-# convertir una arreglo de numeros a string
+#insertar un 0 cada 8 posiciones de izquuierda a derecha
+def convert_a_binario(string):
+    binario = ''
+    for i in string:
+        binario += f'{ord(i):08b}'
+    return binario
 
+#Convertir string a vector
+def convert_a_vector(string):
+    vector = []
+    for i in string:
+        vector.append(int(i))
+    return vector
 
 def convertir_a_string(arreglo):
     string = ''
@@ -60,8 +71,7 @@ def main():
             break
 
         # Paso 1: Recibo la trama y la convierto en binario
-        binary_string = list(
-            map(int, (''.join(format(ord(x), 'b') for x in string))))
+        binary_string = convert_a_vector(convert_a_binario(string))
 
         os.system('cls')
         print('-----------Resultado----------- \n')
@@ -74,7 +84,6 @@ def main():
 
         for _ in range(len(POLYNOMIAL.get('binary'))-1):
             binary_string.append(0)
-        #print('Trama con residuo: ', binary_string)
 
         # Paso 3 Resolver la división
         residuo = calcular_residuo(POLYNOMIAL.get('binary'), binary_string)
@@ -86,7 +95,7 @@ def main():
         print('Secuencia binaria de datos para la detección de errores: ',
               convertir_a_string(binary_string+residuo))
         os.system('pause')
-        
+
 
 
         # Comprobacion de CRC

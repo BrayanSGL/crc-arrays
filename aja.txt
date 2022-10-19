@@ -3,3 +3,45 @@ Cadena a introducir ....
 Su CRC cin ek binomio Tal 
  
 es:
+
+
+def calcular_residuo(generator: Array, trama: Array) -> Array:
+    while True:
+        # Paso 3.1: Obtener el residuo
+        print('----------VUELTA----------')
+        print('trama')
+        print(trama)
+        residuo = xor(generator, trama[:len(generator)])
+        print('generador')
+        print(generator)
+        print('trama con el tamaño del generador')
+        print(trama[:len(generator)])
+        print('Residuo')
+        print(residuo)
+
+        # Paso 3.2: Quitar los ceros a la izquierda de residuo si existen
+        ceros = 0
+        try:
+            while residuo[0] == 0:
+                ceros += 1
+                residuo.pop(0)
+        except IndexError:
+            return [0] * len(generator)
+
+        # Paso 3.3: Recortar la trama la cantidad de ceros a la izquierda
+        print('trama original')
+        print(trama)
+        trama = trama[len(generator):]
+        print('Trama recortada: ')
+        print(trama)
+
+        trama = residuo + trama
+        print('Trama con residuo: ')
+        print(trama)
+
+        if len(trama) < len(generator):
+            print('entre', len(trama), len(generator))
+            # agregar a residuo seros a la izquierda hasta que tenga longitud 3
+            while len(trama) < len(generator):
+                trama.insert(0, 0)
+            return trama
