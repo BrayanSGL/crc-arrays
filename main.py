@@ -6,7 +6,7 @@ POLYNOMIAL = {
     'CRC': 'CRC-16',
     'code': 16,
     'generator': 'P(x) = x^16 + x^15 + x^2 + 1',
-    'hexa': 0x18005,
+    'hexa': '0x18005',
     'binary': [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1]
 }
 
@@ -68,7 +68,7 @@ def main():
         print('Texto ingresado: ', string)
         print('Texto en binario: ', convertir_a_string(binary_string))
         print('Polinomio generador: ', POLYNOMIAL.get(
-            'CRC'), ' ', POLYNOMIAL.get('generator'))
+            'CRC'), '|', POLYNOMIAL.get('generator'), '|', POLYNOMIAL.get('hexa'), '|', convertir_a_string(POLYNOMIAL.get('binary')))
 
         # Paso 2: Agrego el residuo a la trama
 
@@ -86,6 +86,8 @@ def main():
         print('Secuencia binaria de datos para la detección de errores: ',
               convertir_a_string(binary_string+residuo))
         os.system('pause')
+        
+
 
         # Comprobacion de CRC
 
