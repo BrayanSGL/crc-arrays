@@ -10,16 +10,12 @@ POLYNOMIAL = {
     'binary': [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1]
 }
 
-# insertar un 0 cada 8 posiciones de izquuierda a derecha
-
 
 def convert_a_binario(string):
     binario = ''
     for i in string:
         binario += f'{ord(i):08b}'
     return binario
-
-# Convertir string a vector
 
 
 def convert_a_vector(string):
@@ -42,9 +38,9 @@ def xor(a, b):
 
 def calcular_residuo(generator: Array, trama: Array) -> Array:
     while True:
+        print('------------Vuelta------------')
         # Paso 3.1: Obtener el residuo
         residuo = xor(generator, trama[:len(generator)])
-
         # Paso 3.2: Quitar los ceros a la izquierda de residuo si existen
         ceros = 0
         try:
@@ -54,12 +50,13 @@ def calcular_residuo(generator: Array, trama: Array) -> Array:
         except IndexError:
             return [0] * len(generator)
 
+        print('Residuo: ', convertir_a_string(residuo))
+        input('Presione enter para continuar')
         # Paso 3.3: Recortar la trama la cantidad de ceros a la izquierda
         trama = trama[len(generator):]
-
         trama = residuo + trama
 
-        if len(trama) <= len(generator):
+        if len(trama)+1 <= len(generator):
             # agregar a residuo seros a la izquierda hasta que tenga longitud 3
             while len(trama) < len(generator)-1:
                 trama.insert(0, 0)
@@ -90,7 +87,11 @@ def main():
         for _ in range(len(POLYNOMIAL.get('binary'))-1):
             binary_string.append(0)
 
+        while binary_string[0] == 0:
+            binary_string.pop(0)
+
         # Paso 3 Resolver la división
+
         residuo = calcular_residuo(POLYNOMIAL.get('binary'), binary_string)
 
         for _ in range(len(POLYNOMIAL.get('binary'))-1):
