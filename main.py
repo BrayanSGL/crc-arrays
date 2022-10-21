@@ -1,14 +1,36 @@
+# Programa para el calculo de CRC con multiples polinomios alegibles
+# Hecho por: Brayan Snader Galeano Lara
+# @brayangaleanolara
+
 from ctypes import Array
 import os
 
-
-POLYNOMIAL = {
-    'CRC': 'CRC-16',
-    'code': 16,
-    'generator': 'P(x) = x^16 + x^15 + x^2 + 1',
-    'hexa': '0x18005',
-    'binary': [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1]
-}
+POLYNOMIAL = [
+    {
+        'CRC': 'CRC-3/ROHC',
+        'generator': 'x^3 + x^2 + 1',
+        'hexa': '0x3',
+        'binary': [1, 1, 0, 1]
+    },
+    {
+        'CRC': 'CRC-8',
+        'generator': 'x^8 + x^2 + x + 1',
+        'hexa': '0x107',
+        'binary': [1, 0, 0, 0, 0, 0, 1, 1, 1]
+    },
+    {
+        'CRC': 'CRC-16',
+        'generator': 'P(x) = x^16 + x^15 + x^2 + 1',
+        'hexa': '0x18005',
+        'binary': [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1]
+    },
+    {
+        'CRC': 'CRC-32',
+        'generator': 'P(x) = x^32 + x^29 + x^28 + x^24 + x^23 + x^22 + x^20 + x^19 + x^17 + x^16 + x^15 + 1',
+        'hexa': '0x4C11DB7',
+        'binary': [1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+    }
+]
 
 
 def convert_a_binario(string):
@@ -36,9 +58,30 @@ def xor(a, b):
     return [int(x) ^ int(y) for x, y in zip(a, b)]
 
 
+def menu_polinomios():
+
+    while True:
+        os.system('cls')
+        print('Lista de polinomios: \n')
+        for i in range(len(POLYNOMIAL)):
+            print(i+1, '. ', POLYNOMIAL[i].get('CRC'), '|', POLYNOMIAL[i].get('generator'), '|',
+                  POLYNOMIAL[i].get('hexa'), '|', convertir_a_string(POLYNOMIAL[i].get('binary')))
+        try:
+            index_polinomio = int(
+                input('\n# Ingrese el numero del polinomio que desea usar > '))
+
+            if index_polinomio > len(POLYNOMIAL) or index_polinomio < 1:
+                raise ValueError
+            else:
+                return index_polinomio-1
+        except ValueError:
+            print('Error: Ingrese un numero valido')
+            os.system('pause')
+
+
 def calcular_residuo(generator: Array, trama: Array) -> Array:
     while True:
-        print('------------Vuelta------------')
+        # print('------------Vuelta------------')
         # Paso 3.1: Obtener el residuo
         residuo = xor(generator, trama[:len(generator)])
         # Paso 3.2: Quitar los ceros a la izquierda de residuo si existen
@@ -50,8 +93,8 @@ def calcular_residuo(generator: Array, trama: Array) -> Array:
         except IndexError:
             return [0] * len(generator)
 
-        print('Residuo: ', convertir_a_string(residuo))
-        input('Presione enter para continuar')
+        #print('Residuo: ', convertir_a_string(residuo))
+        #input('Presione enter para continuar')
         # Paso 3.3: Recortar la trama la cantidad de ceros a la izquierda
         trama = trama[len(generator):]
         trama = residuo + trama
@@ -72,6 +115,8 @@ def main():
             print('------Programa terminado por el usuario-----')
             break
 
+        p = menu_polinomios()
+
         # Paso 1: Recibo la trama y la convierto en binario
         binary_string = convert_a_vector(convert_a_binario(string))
 
@@ -79,22 +124,19 @@ def main():
         print('-----------Resultado----------- \n')
         print('Texto ingresado: ', string)
         print('Texto en binario: ', convertir_a_string(binary_string))
-        print('Polinomio generador: ', POLYNOMIAL.get(
-            'CRC'), '|', POLYNOMIAL.get('generator'), '|', POLYNOMIAL.get('hexa'), '|', convertir_a_string(POLYNOMIAL.get('binary')))
+        print('Polinomio generador: ', POLYNOMIAL[p].get(
+            'CRC'), '|', POLYNOMIAL[p].get('generator'), '|', POLYNOMIAL[p].get('hexa'), '|', convertir_a_string(POLYNOMIAL[p].get('binary')))
 
         # Paso 2: Agrego el residuo a la trama
 
-        for _ in range(len(POLYNOMIAL.get('binary'))-1):
+        for _ in range(len(POLYNOMIAL[p].get('binary'))-1):
             binary_string.append(0)
-
-        while binary_string[0] == 0:
-            binary_string.pop(0)
 
         # Paso 3 Resolver la división
 
-        residuo = calcular_residuo(POLYNOMIAL.get('binary'), binary_string)
+        residuo = calcular_residuo(POLYNOMIAL[p].get('binary'), binary_string)
 
-        for _ in range(len(POLYNOMIAL.get('binary'))-1):
+        for _ in range(len(POLYNOMIAL[p].get('binary'))-1):
             binary_string.pop(-1)
 
         print('Residuo de la división: ', convertir_a_string(residuo))
@@ -103,9 +145,9 @@ def main():
 
         # Comprobacion de CRC
         residuo_verific = calcular_residuo(
-            POLYNOMIAL.get('binary'), binary_string+residuo)
+            POLYNOMIAL[p].get('binary'), binary_string+residuo)
         verificacion = True if residuo_verific == [
-            0] * len(POLYNOMIAL.get('binary')) else False
+            0] * len(POLYNOMIAL[p].get('binary')) else False
         print('Trama procesada correctammente :', verificacion,
               '\nResiduo de la verificación: ', convertir_a_string(residuo_verific))
 
