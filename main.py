@@ -13,6 +13,19 @@ POLYNOMIAL = [
         'binary': [1, 1, 0, 1]
     },
     {
+        'CRC': 'CRC-3',
+        'generator': 'x^3 + 1',
+        'hexa': '0x##',
+        'binary': [1,0,0,1]
+    },
+    {
+        'CRC': 'CRC-4/ITU',
+        'generator': 'x^4 + x + 1',
+        'hexa': '0x##',
+        'binary': [1, 0, 0, 1, 1]
+
+    },
+    {
         'CRC': 'CRC-8',
         'generator': 'x^8 + x^2 + x + 1',
         'hexa': '0x107',
